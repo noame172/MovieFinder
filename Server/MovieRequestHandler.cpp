@@ -86,11 +86,13 @@ RequestResult MovieRequestHandler::getMovie(const RequestInfo& requestInfo)
         auto searchJson = nlohmann::json::parse(readBuffer);
         if (!searchJson["results"].empty()) {
             // Pick the very first result (index 0) as it represents the most relevant match
+			std::cout << "Found movie: " << searchJson["results"][0]["title"] << " with ID: " << searchJson["results"][0]["id"] << std::endl;
             int id = searchJson["results"][0]["id"];
             movie_id = std::to_string(id);
         }
         else {
             std::cerr << "No movie found with name: " << request.movieName << std::endl;
+			std::cout << "Search JSON payload: " << readBuffer << std::endl;
             curl_slist_free_all(headers);
             curl_easy_cleanup(hnd);
             return RequestResult();
@@ -127,14 +129,16 @@ RequestResult MovieRequestHandler::getMovie(const RequestInfo& requestInfo)
         try {
             // At this point, 'readBuffer' contains the final, complete JSON layout of the movie
             auto movieDetailsJson = nlohmann::json::parse(readBuffer);
-
+			std::vector<std::string> genres;
+            for(auto& genre : movieDetailsJson["genres"]) {
+                genres.push_back(genre["name"]);
+			}
 			response.status = 1;
             response.movie = MovieData(
                 movieDetailsJson["title"],
                 movieDetailsJson["runtime"],
-                movieDetailsJson["genres"].get<std::vector<std::string>>(),
-                movieDetailsJson["overview"],
-                movieDetailsJson["director"]
+                genres,
+                movieDetailsJson["overview"]
 			);
         }
         catch (const std::exception& e) {

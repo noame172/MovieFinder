@@ -58,6 +58,10 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 
 		while (true) {
 			unsigned char code = (unsigned char)getIntPartFromSocket(clientSocket, 1);
+			if(code == 0) {
+				std::cout << "Client disconnected." << std::endl;
+				break;
+			}
 			int size = getIntPartFromSocket(clientSocket, 4);
 
 			char* data = getPartFromSocket(clientSocket, size, 0);

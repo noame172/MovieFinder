@@ -20,7 +20,6 @@ Buffer JsonResponsePacketSerializer::serializeResponse(const GetMovieResponse& r
 	r["runTimeInMinutes"] = response.movie.getRunTimeInMinutes();
 	r["genres"] = response.movie.getGenres();
 	r["overview"] = response.movie.getOverview();
-	r["director"] = response.movie.getDirector();
     json j = { {"status", response.status}, {"movie", r} };
     return buildBuffer((unsigned char)ResponseCode::Movie_Response, j.dump());
 }
