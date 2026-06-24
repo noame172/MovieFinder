@@ -138,7 +138,8 @@ RequestResult MovieRequestHandler::getMovie(const RequestInfo& requestInfo)
                 movieDetailsJson["title"],
                 movieDetailsJson["runtime"],
                 genres,
-                movieDetailsJson["overview"]
+                movieDetailsJson["overview"],
+				movieDetailsJson["poster_path"]
 			);
         }
         catch (const std::exception& e) {

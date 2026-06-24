@@ -14,5 +14,6 @@ namespace Client
         public List<string> genres { get; set; }
         public string overview { get; set; }
 
+        public string moviePosterPath { get; set; }
     }
 }

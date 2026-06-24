@@ -60,12 +60,23 @@ void Communicator::handleNewClient(SOCKET clientSocket)
 			delete[] s;
 
 			RequestInfo requestInfo{ (char)code, time(NULL), buffer };
-			RequestResult result = m_handlerFactory.createMovieRequestHandler()->handleRequest(requestInfo);
+			std::unique_ptr<IRequestHandler> handler = m_handlerFactory.createMovieRequestHandler();
+			RequestResult result = handler->handleRequest(requestInfo);
 			if (result.newHandler != nullptr)
 			{
-				m_handlerFactory.createMovieRequestHandler().reset(result.newHandler);
+				handler.reset(result.newHandler);
 			}
-			send(clientSocket, (const char*)result.buffer.data(), result.buffer.size(), 0);
+			if (result.buffer.empty())
+			{
+				GetMovieResponse failResponse;
+				failResponse.status = 0;
+				Buffer failBuffer = JsonResponsePacketSerializer::serializeResponse(failResponse);
+				send(clientSocket, (const char*)failBuffer.data(), failBuffer.size(), 0);
+			}
+			else
+			{
+				send(clientSocket, (const char*)result.buffer.data(), result.buffer.size(), 0);
+			}
 
 		}
 	}

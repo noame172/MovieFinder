@@ -8,6 +8,10 @@ namespace Client
     {
         public static Response DeserializeResponse(uint code, byte[] data)
         {
+            if(code == 0)
+            {
+                return new Response { code = code };
+            }
             string json = Encoding.UTF8.GetString(data);
 
             var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);

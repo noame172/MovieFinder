@@ -48,17 +48,28 @@ namespace Client
                 Response response = m_communicator.sendAndReceive(RequestCode.GetMovie, new { movieName = movieName });
                 if (response != null)
                 {
-                    ShowMovieWindow showMovieWindow = new ShowMovieWindow(m_communicator, new MovieData(response.title,
-                        response.overview,
-                        response.runTimeInMinutes,
-                        response.genres));
-                    showMovieWindow.Show();
-                    this.Close();
+                    if (response.title == "" || response.runTimeInMinutes == 0 || response.genres == null || response.overview == "")
+                    {
+                        ErrorWindow errorWindow = new ErrorWindow(m_communicator);
+                        errorWindow.Show();
+                        this.Close();
+                    }
+                    else
+                    {
+                        ShowMovieWindow showMovieWindow = new ShowMovieWindow(m_communicator, new MovieData(response.title,
+                            response.overview,
+                            response.runTimeInMinutes,
+                            response.genres,
+                            response.moviePosterPath));
+                        showMovieWindow.Show();
+                        this.Close();
+
+                    }
                 }
             }
             else
             {
-                MessageBox.Show("Please enter a movie name.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("couldnt find this movie name.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }

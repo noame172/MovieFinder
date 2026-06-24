@@ -1,0 +1,50 @@
+﻿<Window x:Class="Client.ErrorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="ErrorWindow" Height="450" Width="800">
+    <Grid Background="#F8F9FA">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <TextBlock Text="🎬❌" 
+                       FontSize="60" 
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="No Movie Found" 
+                       FontSize="36" 
+                       FontWeight="Bold" 
+                       Foreground="#DC3545" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <TextBlock Text="We couldn't find the movie you were looking for. Please check the spelling and try again." 
+                       FontSize="16" 
+                       Foreground="#6C757D" 
+                       TextWrapping="Wrap" 
+                       MaxWidth="400"
+                       TextAlignment="Center"
+                       Margin="0,0,0,30"/>
+
+            <Button x:Name="btnBack" 
+                    Content="Go Back" 
+                    Width="180" 
+                    Height="45" 
+                    FontSize="16" 
+                    FontWeight="SemiBold"
+                    Background="#0D6EFD" 
+                    Foreground="White" 
+                    Cursor="Hand"
+                    Click="btnBack_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+        </StackPanel>
+    </Grid>
+</Window>
