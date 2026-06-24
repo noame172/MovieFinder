@@ -1,39 +1,31 @@
-#include "communicator.h"
+#include "Communicator.h"
 
-Communicator::Communicator(RequestHandlerFactory& factory)
-	: m_handlerFactory(factory)
+Communicator::Communicator(RequestHandlerFactory& factory) : m_handlerFactory(factory)
 {
-
-	// this Communicator use TCP. that why SOCK_STREAM & IPPROTO_TCP
-	// if the Communicator use UDP we will use: SOCK_DGRAM & IPPROTO_UDP
 	m_serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
 	if (m_serverSocket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__ " - socket");
+		throw std::exception("Failed to create socket");
 }
 
-Communicator::~Communicator()
+Communicator::~Communicator() {}
+
+void Communicator::startHandleRequests()
 {
-	try
-	{
-		// the only use of the destructor should be for freeing 
-		// resources that was allocated in the constructor
-		closesocket(m_serverSocket);
-	}
-	catch (...) {}
+	SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
+	if (client_socket == INVALID_SOCKET)
+		throw std::exception(__FUNCTION__);
+
+	std::cout << "Client accepted. Server and client can speak" << std::endl;
+	// the function that handle the conversation with the client
+	handleNewClient(client_socket);
 }
 
-void Communicator::startListening()
-{
-	bindAndListen();
-}
 
 void Communicator::bindAndListen()
 {
-
 	struct sockaddr_in sa = { 0 };
 
-	sa.sin_port = htons(PORT); // port that Communicator will listen for
+	sa.sin_port = htons(PORT); // port that server will listen for
 	sa.sin_family = AF_INET;   // must be AF_INET
 	sa.sin_addr.s_addr = INADDR_ANY;    // when there are few ip's for the machine. We will use always "INADDR_ANY"
 
@@ -45,40 +37,41 @@ void Communicator::bindAndListen()
 	if (listen(m_serverSocket, SOMAXCONN) == SOCKET_ERROR)
 		throw std::exception(__FUNCTION__ " - listen");
 	std::cout << "Listening on port " << PORT << std::endl;
+}
 
-	while (true)
-	{
-		startHandleRequests();
-	}
+void Communicator::startListening()
+{
+	bindAndListen();
 }
 
 void Communicator::handleNewClient(SOCKET clientSocket)
 {
-	try {
 
-		while (true) {
+	try
+	{
+		while (true)
+		{
 			unsigned char code = (unsigned char)getIntPartFromSocket(clientSocket, 1);
-			if(code == 0) {
-				std::cout << "Client disconnected." << std::endl;
-				break;
-			}
 			int size = getIntPartFromSocket(clientSocket, 4);
 
-			char* data = getPartFromSocket(clientSocket, size, 0);
-			Buffer buffer(data, data + size);
-			delete data;
 
-			std::unique_ptr<IRequestHandler> handler = m_handlerFactory.createMovieRequestHandler();
-			RequestInfo requestInfo{ char(code), time(nullptr), buffer };
-			RequestResult result = handler->handleRequest(requestInfo);
-			if (result.newHandler != nullptr) {
-				handler.reset();
+			char* s = getPartFromSocket(clientSocket, size, 0);
+			Buffer buffer(s, s + size);
+			delete[] s;
+
+			RequestInfo requestInfo{ (char)code, time(NULL), buffer };
+			RequestResult result = m_handlerFactory.createMovieRequestHandler()->handleRequest(requestInfo);
+			if (result.newHandler != nullptr)
+			{
+				m_handlerFactory.createMovieRequestHandler().reset(result.newHandler);
 			}
 			send(clientSocket, (const char*)result.buffer.data(), result.buffer.size(), 0);
+
 		}
 	}
-	catch (const std::exception& ex) {
-		std::cerr << "Error while handling client: " << ex.what() << std::endl;
+	catch (const std::exception& e)
+	{
+		std::cerr << "Error in client handler: " << e.what() << std::endl;
 	}
 	closesocket(clientSocket);
 }
@@ -107,19 +100,11 @@ char* Communicator::getPartFromSocket(SOCKET sc, int bytesNum, int flags)
 int Communicator::getIntPartFromSocket(SOCKET sc, int bytesNum)
 {
 	char* data = getPartFromSocket(sc, bytesNum, 0);
-	return atoi(data);
-}
-
-void Communicator::startHandleRequests()
-{
-
-	// this accepts the client and create a specific socket from Communicator to this client
-	// the process will not continue until a client connects to the Communicator
-	SOCKET client_socket = accept(m_serverSocket, NULL, NULL);
-	if (client_socket == INVALID_SOCKET)
-		throw std::exception(__FUNCTION__);
-
-	std::cout << "Client accepted. Communicator and client can speak" << std::endl;
-	// the function that handle the conversation with the client
-	handleNewClient(client_socket);
+	int result = 0;
+	for (int i = 0; i < bytesNum; i++)
+	{
+		result = (result << 8) | (unsigned char)data[i];
+	}
+	if (bytesNum > 0) delete[] data;
+	return result;
 }

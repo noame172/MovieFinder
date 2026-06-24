@@ -1,0 +1,41 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Trivia Game" Height="300" Width="400"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Background="#1a1a2e">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <TextBlock Text="MOVIE FINDER" 
+                       FontSize="28" 
+                       FontWeight="Bold"
+                       Foreground="#e94560"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <TextBlock Text="Enter Movie Name" Foreground="White" Margin="0,0,0,5"/>
+            <TextBox Name="txtMovieName" 
+                     Width="250" 
+                     Height="35"
+                     Background="#16213e"
+                     Foreground="White"
+                     BorderBrush="#e94560"
+                     Padding="5"
+                     Margin="0,0,0,10"/>
+
+            <Button Content="Search"
+                    Width="250"
+                    Height="40"
+                    Background="#e94560"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="16"
+                    Margin="0,0,0,10"
+                    Click="btnSearch_Click"/>
+
+        </StackPanel>
+    </Grid>
+</Window>
+    
+    

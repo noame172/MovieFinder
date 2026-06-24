@@ -1,0 +1,76 @@
+﻿<Window x:Class="Client.ShowMovieWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Movie Details" Height="500" Width="850" Background="#1a1a2e"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" CornerRadius="8" Background="#0f3460" Margin="0,0,20,0">
+            <Image Name="imgMoviePoster" Stretch="UniformToFill" />
+        </Border>
+
+        <StackPanel Grid.Column="1" VerticalAlignment="Top">
+
+            <TextBlock Name="txtMovieTitle" 
+                       Text="Loading Title..." 
+                       FontSize="28" 
+                       FontWeight="Bold" 
+                       Foreground="#e94560" 
+                       Margin="0,0,0,10" 
+                       TextWrapping="Wrap"/>
+
+            <WrapPanel Margin="0,0,0,20">
+                <TextBlock Name="txtMovieRuntime" 
+                           Text="0 min" 
+                           FontSize="14" 
+                           FontWeight="SemiBold" 
+                           Foreground="#ffffff" 
+                           Margin="0,0,15,0"/>
+
+                <TextBlock Text="|" Foreground="#0f3460" Margin="0,0,15,0" FontSize="14"/>
+
+                <TextBlock Name="txtMovieGenres" 
+                           Text="Genres..." 
+                           FontSize="14" 
+                           FontStyle="Italic" 
+                           Foreground="#ffffff"/>
+            </WrapPanel>
+
+            <Separator Background="#0f3460" Margin="0,0,0,15"/>
+
+            <TextBlock Text="OVERVIEW" 
+                       FontSize="16" 
+                       FontWeight="Bold" 
+                       Foreground="#e94560" 
+                       Margin="0,0,0,8"/>
+
+            <TextBlock Name="txtMovieOverview" 
+                       Text="Loading movie overview from server..." 
+                       FontSize="15" 
+                       Foreground="#ffffff" 
+                       TextWrapping="Wrap" 
+                       LineHeight="22"
+                       Margin="0,0,0,30"/>
+
+            <Button Content="Back to Search"
+                    Width="180"
+                    Height="35"
+                    Background="#0f3460"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="14"
+                    HorizontalAlignment="Left"
+                    Click="btnBack_Click"/>
+
+        </StackPanel>
+    </Grid>
+</Window>

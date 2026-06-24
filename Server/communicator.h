@@ -12,7 +12,6 @@
 #include "JsonRequestPacketDeserializer.h"
 #include "JsonResponsePacketSerializer.h"
 #include "RequestHandlerFactory.h"
-#include <mutex>
 
 
 constexpr int PORT = 5000;
